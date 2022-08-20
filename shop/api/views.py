@@ -1,8 +1,10 @@
 import json
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
 
+from shop.api.serializers import ProductSerializer
 from shop.models import Product
 
 
@@ -10,34 +12,33 @@ from shop.models import Product
 def product_view(request, product_id=None):
     if request.method == 'GET':
         if product_id:
-            product = Product.objects.filter(id=product_id).values()
-            if product.exists():
-                return HttpResponse(json.dumps(product[0], indent=4), status=200)
-            else:
-                return HttpResponse(json.dumps({'error': "Not Found"}, indent=4), status=200)
+            try:
+                return JsonResponse(ProductSerializer(Product.objects.get(id=product_id)).data, status=status.HTTP_200_OK)
+            except Product.DoesNotExist:
+                return JsonResponse({'error': "Not Found"}, status=status.HTTP_404_NOT_FOUND)
         page, limit = int(request.GET.get('page', '0')), request.GET.get('limit', 12)
-        products = [product for product in Product.objects.all()[page*limit:page*limit+limit].values()]
-        return HttpResponse(json.dumps(products, indent=4), status=200)
+        return JsonResponse(ProductSerializer(Product.objects.all()[page*limit:page*limit+limit], many=True).data, status=status.HTTP_200_OK)
     elif request.method == "POST":
-        product = Product.objects.create(**json.loads(request.body))
-        product.save()
-        return HttpResponse(json.dumps(Product.objects.filter(id=product.id).values()[0], indent=4), status=201)
-    elif request.method == "PUT":
+        product_s = ProductSerializer(data=json.loads(request.body))
+        if product_s.is_valid():
+            product_s.save()
+            return JsonResponse(product_s.data, status=status.HTTP_201_CREATED)
+        else:
+            return JsonResponse(product_s.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "PATCH":
         try:
-            product = Product.objects.get(id=product_id)
-            body = json.loads(request.body)
-            for k, v in body.items():
-                setattr(product, k, v)
-            product.save()
-            product = Product.objects.filter(id=product_id).values()
-            return HttpResponse(json.dumps(product[0], indent=4), status=200)
-        except Exception as E:
-            pass
+            product_s = ProductSerializer(Product.objects.get(id=product_id), data=json.loads(request.body))
+            if product_s.is_valid():
+                product_s.save()
+                return JsonResponse(product_s.data, status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse(product_s.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Product.DoesNotExist as E:
+            return JsonResponse({'error': "Not Found"}, status=status.HTTP_404_NOT_FOUND)
     elif request.method == "DELETE":
         try:
             product = Product.objects.get(id=product_id)
             product.delete()
             return HttpResponse(status=204)
-
-        except Exception as E:
-            pass
+        except Product.DoesNotExist:
+            return JsonResponse({'error': "Not Found"}, status=status.HTTP_404_NOT_FOUND)

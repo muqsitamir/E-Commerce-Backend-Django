@@ -7,7 +7,7 @@ class Product(models.Model):
     shipping = models.BooleanField(default=True)
     description = models.TextField()
     sale_price = models.FloatField()
-    image = models.ImageField(default='https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image-300x225.png')
+    image = models.ImageField(null=True)
 
     def __str__(self):
         return self.title
