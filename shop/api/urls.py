@@ -19,6 +19,9 @@ from django.urls import path
 from shop.api import views
 
 urlpatterns = [
-    path('products/', views.product_view),
-    path('products/<int:product_id>', views.product_view),
+    path('products/', views.ProductAPIView.as_view(), name='product-list'),
+    path('products/', views.ProductAPIView.as_view(), name='product-create'),
+    path('products/<int:product_id>', views.ProductAPIView.as_view(), name='product-details'),
+    path('products/<int:product_id>', views.ProductAPIView.as_view(), name='product-update'),
+    path('products/<int:product_id>', views.ProductAPIView.as_view(), name='product-delete'),
 ]
