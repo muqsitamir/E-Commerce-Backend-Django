@@ -1,15 +1,9 @@
-from rest_framework import mixins, generics
+from rest_framework.viewsets import ModelViewSet
 
 from shop.api.serializers import ProductSerializer
 from shop.models import Product
 
 
-class ProductViewSet(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
+class ProductViewSet(ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-
-    def get(self, request, pk=None):
-        if not pk:
-            return self.list(request)
-        return self.retrieve(request, pk)
-
