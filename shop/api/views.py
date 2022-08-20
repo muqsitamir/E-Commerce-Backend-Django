@@ -1,98 +1,32 @@
-import json
-
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework import status
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import mixins, generics
 
 from shop.api.serializers import ProductSerializer
 from shop.models import Product
 
 
-class ProductAPIView(APIView):
-    permission_classes = [AllowAny]
+class ProductViewSet(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
 
-    def get_object(self, pk):
-        try:
-            return Product.objects.get(id=pk)
-        except Product.DoesNotExist:
-            return Response({'error': "Not Found"}, status=status.HTTP_404_NOT_FOUND)
+    def get_queryset(self):
+        page, limit = int(self.request.GET.get('page', '0')), self.request.GET.get('limit', 12)
+        return Product.objects.all()
 
-    def get(self, request, product_id):
-        if product_id:
-            product = self.get_object(product_id)
-            if not isinstance(product, Product):
-                return product
-            serializer = ProductSerializer(product)
-        else:
-            page, limit = int(request.GET.get('page', '0')), request.GET.get('limit', 12)
-            products = Product.objects.all()[page * limit:page * limit + limit]
-            serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(self, request, pk=None):
+        if not pk:
+            return self.list(request)
+        return self.retrieve(request, pk)
 
     def post(self, request):
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return self.create(request)
 
-    def patch(self, request, product_id):
-        product = self.get_object(product_id)
-        if not isinstance(product, Product):
-            return product
-        serializer = ProductSerializer(product, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, pk):
+        return self.update(request, pk,partial=True)
 
-    def delete(self, request, product_id):
-        product = self.get_object(product_id)
-        if not isinstance(product, Product):
-            return product
-        product.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
+
+    def put(self, request, pk):
+        return self.update(request, pk)
 
 
-
-
-
-@csrf_exempt
-def product_view(request, product_id=None):
-    if request.method == 'GET':
-        if product_id:
-            try:
-                return Response(ProductSerializer(Product.objects.get(id=product_id)).data, status=status.HTTP_200_OK)
-            except Product.DoesNotExist:
-                return Response({'error': "Not Found"}, status=status.HTTP_404_NOT_FOUND)
-        page, limit = int(request.GET.get('page', '0')), request.GET.get('limit', 12)
-        return Response(ProductSerializer(Product.objects.all()[page*limit:page*limit+limit], many=True).data, status=status.HTTP_200_OK)
-    elif request.method == "POST":
-        product_s = ProductSerializer(data=json.loads(request.body))
-        if product_s.is_valid():
-            product_s.save()
-            return Response(product_s.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(product_s.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == "PATCH":
-        try:
-            product_s = ProductSerializer(Product.objects.get(id=product_id), data=json.loads(request.body))
-            if product_s.is_valid():
-                product_s.save()
-                return Response(product_s.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(product_s.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Product.DoesNotExist as E:
-            return Response({'error': "Not Found"}, status=status.HTTP_404_NOT_FOUND)
-    elif request.method == "DELETE":
-        try:
-            product = Product.objects.get(id=product_id)
-            product.delete()
-            return HttpResponse(status=204)
-        except Product.DoesNotExist:
-            return Response({'error': "Not Found"}, status=status.HTTP_404_NOT_FOUND)
