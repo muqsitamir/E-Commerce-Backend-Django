@@ -79,8 +79,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'HeritageCraft',
-        'USER': 'djangouser',
-        'PASSWORD': 'password',
+        'USER': 'django',
+        'PASSWORD': 'Mysql@acc1',
         'HOST': '50.116.7.254',
         'PORT': '3306',
     }
