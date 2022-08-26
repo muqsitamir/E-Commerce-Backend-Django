@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-yq_p6pm@%r%a75=fohd2oh8=7qvf#r^=2r0t+f$z8el$sejd3+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'api.heritagecraft.pk']
+ALLOWED_HOSTS = ['api.heritagecraft.pk']
 
 # Application definition
 
