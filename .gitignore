@@ -7,3 +7,4 @@ media
 db.sqlite3
 /HeritageCraft/settings/dev/
 /HeritageCraft/settings/dev.py
+__pycache__/
