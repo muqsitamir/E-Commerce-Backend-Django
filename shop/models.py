@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import signals
+from django.dispatch import receiver
 
 
 class Product(models.Model):
@@ -11,3 +13,8 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+
+@receiver(signals.post_delete, sender=Product)
+def delete_image(sender, instance, **kwargs):
+    instance.image.delete()

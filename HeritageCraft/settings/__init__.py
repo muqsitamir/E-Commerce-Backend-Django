@@ -1,2 +1,5 @@
 from .prod import *
-from .dev import *
+try:
+    from .dev import *
+except ModuleNotFoundError as e:
+    pass

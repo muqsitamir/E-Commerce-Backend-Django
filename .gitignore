@@ -5,6 +5,5 @@
 *.csv
 media
 db.sqlite3
-/HeritageCraft/settings/dev/
-/HeritageCraft/settings/dev.py
+dev.py
 __pycache__/
