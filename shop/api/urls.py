@@ -18,6 +18,9 @@ from rest_framework import routers
 from shop.api import views
 
 router = routers.SimpleRouter()
-router.register('products', views.ProductViewSet)
+# router.register('products', views.ProductViewSet)
+router.register('messages', views.MessageViewSet)
+router.register('sports', views.SportViewSet)
+
 
 urlpatterns = router.urls
