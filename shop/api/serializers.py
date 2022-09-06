@@ -29,7 +29,7 @@ class SportNavSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sport
-        fields = ('name', 'description', 'categories')
+        fields = ('name', 'description', 'nav_image1', 'nav_image2', 'categories')
 
 
 class MessageSerializer(serializers.ModelSerializer):
