@@ -19,8 +19,10 @@ from shop.api import views
 
 router = routers.SimpleRouter()
 # router.register('products', views.ProductViewSet)
-router.register('messages', views.MessageViewSet)
-router.register('sports', views.SportViewSet)
+router.register('message', views.MessageViewSet)
+# router.register('sports', views.SportViewSet)
+router.register('category', views.CategoryViewSet)
+router.register('featured_image', views.FeaturedImageViewSet)
 
 
 urlpatterns = router.urls
