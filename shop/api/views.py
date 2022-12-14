@@ -9,9 +9,16 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.filter(parent=None).all()
 
     def get_queryset(self):
-        category_id = self.request.query_params.get('id', None)
-        if category_id is not None:
-            self.queryset = Category.objects.filter(id=category_id)
+        category_name = self.request.GET.get('category_name', None)
+        if category_name is not None:
+            self.queryset = Category.objects.filter(name=category_name.split(",")[-1])
+            parents = category_name.split(',')[0:-1][::-1]
+            keyword = "parent__"
+            query = {}
+            for category in parents:
+                query[keyword + "name"] = category
+                keyword = keyword + keyword
+            self.queryset = self.queryset.filter(**query)
         return self.queryset
 
 
@@ -28,3 +35,9 @@ class MessageViewSet(ModelViewSet):
 class FeaturedImageViewSet(ModelViewSet):
     serializer_class = FeaturedImageSerializer
     queryset = FeaturedImage.objects.all()
+
+    def get_queryset(self):
+        category_name = self.request.query_params.get('category_name', None)
+        if category_name is not None:
+            self.queryset = FeaturedImage.objects.filter(category__name=category_name)
+        return self.queryset

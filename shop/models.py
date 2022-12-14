@@ -12,6 +12,10 @@ class Category(models.Model):
     nav_image2 = models.ImageField(null=True, blank=True)
 
     def __str__(self):
+        return self.full_name if self.parent else self.name
+
+    @property
+    def full_name(self):
         return f"{self.parent} - {self.name}" if self.parent else self.name
 
 
@@ -48,6 +52,8 @@ class FeaturedImage(models.Model):
     name = models.CharField(max_length=50)
     image = models.ImageField(null=True, blank=True)
     link = models.CharField(max_length=50)
+    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE,
+                                 limit_choices_to={"parent": None})
 
 
 @receiver(signals.post_delete, sender=FeaturedImage)

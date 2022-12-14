@@ -20,7 +20,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 
 class FeaturedImageAdmin(admin.ModelAdmin):
-    list_display = ("name", "link",)
+    list_display = ("name", "link", 'category')
     search_fields = ("name",)
 
 
