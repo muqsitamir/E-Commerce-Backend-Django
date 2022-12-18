@@ -9,16 +9,17 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.filter(parent=None).all()
 
     def get_queryset(self):
-        category_name = self.request.GET.get('category_name', None)
+        category_name = self.request.query_params.get('category_name', None)
         if category_name is not None:
             self.queryset = Category.objects.filter(name=category_name.split(",")[-1])
-            parents = category_name.split(',')[0:-1][::-1]
-            keyword = "parent__"
-            query = {}
-            for category in parents:
-                query[keyword + "name"] = category
-                keyword = keyword + keyword
-            self.queryset = self.queryset.filter(**query)
+            if len(category_name.split(",")) > 1:
+                parents = category_name.split(',')[0:-1][::-1]
+                keyword = "parent__"
+                query = {}
+                for category in parents:
+                    query[keyword + "name"] = category
+                    keyword = keyword + keyword
+                self.queryset = self.queryset.filter(**query)
         return self.queryset
 
 

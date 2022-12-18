@@ -51,9 +51,10 @@ class Message(models.Model):
 class FeaturedImage(models.Model):
     name = models.CharField(max_length=50)
     image = models.ImageField(null=True, blank=True)
-    link = models.CharField(max_length=50)
+    link = models.CharField(max_length=50, blank=True, null=True)
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE,
                                  limit_choices_to={"parent": None})
+    category_endorsement_pic = models.BooleanField(default=False, blank=True, null=True)
 
 
 @receiver(signals.post_delete, sender=FeaturedImage)
