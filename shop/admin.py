@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from shop.models import Product, Message, Category, FeaturedImage
+from shop.models import Product, Message, Category, FeaturedImage, Color, Image
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -14,6 +14,11 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
 
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ("name", "color",)
+    search_fields = ("name",)
+
+
 class MessageAdmin(admin.ModelAdmin):
     list_display = ("message", "link",)
     search_fields = ("message",)
@@ -24,8 +29,15 @@ class FeaturedImageAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ("product", "color",)
+    search_fields = ("product", "color", )
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(FeaturedImage, FeaturedImageAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Color, ColorAdmin)
+admin.site.register(Image, ImageAdmin)
 

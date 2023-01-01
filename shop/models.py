@@ -1,4 +1,5 @@
 from django.db import models
+from colorfield.fields import ColorField
 from django.db.models import signals
 from django.dispatch import receiver
 
@@ -26,16 +27,43 @@ def delete_image(sender, instance, **kwargs):
     instance.nav_image2.delete()
 
 
+class Color(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True)
+    color = ColorField(default='#FF0000')
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     title = models.CharField(max_length=50)
-    image = models.ImageField(null=True, blank=True)
+    color = models.ManyToManyField(Color)
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE, limit_choices_to={"children": None})
 
     def __str__(self):
         return self.title
 
+    @property
+    def thumbnails(self):
+        thumbnails = []
+        for color in self.color.all().values():
+            thumbnails.append(dict(image=Image.objects.filter(product__title=self.title, color=color["id"], default=True).values()[0]['image'], color=color["color"]))
+        return thumbnails
+
 
 @receiver(signals.post_delete, sender=Product)
+def delete_image(sender, instance, **kwargs):
+    instance.image.delete()
+
+
+class Image(models.Model):
+    color = models.ForeignKey(Color, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='product_images/')
+    default = models.BooleanField(default=False)
+
+
+@receiver(signals.post_delete, sender=Image)
 def delete_image(sender, instance, **kwargs):
     instance.image.delete()
 
@@ -60,3 +88,5 @@ class FeaturedImage(models.Model):
 @receiver(signals.post_delete, sender=FeaturedImage)
 def delete_image(sender, instance, **kwargs):
     instance.image.delete()
+
+
