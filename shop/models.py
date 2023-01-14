@@ -1,5 +1,4 @@
 from django.db import models
-from colorfield.fields import ColorField
 from django.db.models import signals
 from django.dispatch import receiver
 
