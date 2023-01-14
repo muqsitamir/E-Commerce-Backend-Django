@@ -18,9 +18,8 @@ from rest_framework import routers
 from shop.api import views
 
 router = routers.SimpleRouter()
-router.register('product', views.ProductViewSet)
+router.register('products', views.ProductViewSet)
 router.register('message', views.MessageViewSet)
-# router.register('sports', views.SportViewSet)
 router.register('category', views.CategoryViewSet)
 router.register('featured_image', views.FeaturedImageViewSet)
 
