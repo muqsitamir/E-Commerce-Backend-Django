@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     "corsheaders",
     'rest_framework',
     'shop',
-    'colorfield',
 ]
 
 MIDDLEWARE = [
