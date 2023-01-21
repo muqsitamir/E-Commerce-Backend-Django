@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-yq_p6pm@%r%a75=fohd2oh8=7qvf#r^=2r0t+f$z8el$sejd3+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['api.heritagecraft.pk']
+ALLOWED_HOSTS = ['api.heritagecraft.pk', '127.0.0.1']
 
 # Application definition
 
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
 ]
 
-ROOT_URLCONF = 'HeritageCraft.urls'
+ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
     {
@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'HeritageCraft.wsgi.application'
+WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -85,6 +85,8 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
