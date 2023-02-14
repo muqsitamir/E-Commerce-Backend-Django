@@ -27,6 +27,12 @@ class ProductViewSet(ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
 
+    def get_queryset(self):
+        category = self.request.query_params.get('category', None)
+        if category is not None:
+            self.queryset = Product.objects.filter(category=category)
+        return self.queryset
+
 
 class MessageViewSet(ModelViewSet):
     serializer_class = MessageSerializer
