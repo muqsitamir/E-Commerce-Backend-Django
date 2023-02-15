@@ -1,10 +1,18 @@
-### Linode
+### Linode and Domain
 1. Buy linode server with the latest ubuntu version LTS support.
 2. Buy domain.
-3. Set all linode nameservers to domain nameservers in "Domains".
-4. Set domain and add a cname record as 'api' with alias to '@'
-5. Wait for propagation.
-6. Setup ssh into linode server.
+3. Point all nameservers of domain to linode nameservers.
+```
+ns1.linode.com
+ns2.linode.com
+ns3.linode.com
+ns4.linode.com
+ns5.linode.com
+```
+4. Create an A record to for the domain name and the server ip.
+5. Set domain and add a cname record as 'api' with alias to '@'
+6. Wait for propagation.
+7. Setup ssh into linode server.
 
 ### Django
 
