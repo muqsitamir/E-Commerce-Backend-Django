@@ -178,7 +178,7 @@ Save and close file.
 
 1. `uwsgi --reload /tmp/safe-pidfile.pid` after changing code/taking a git pull.
 2. `sudo service nginx restart` after changing nginx settings.
-3. `sqldump <serverdbname> > backup.sql`
+3. `mysqldump <serverdbname> > backup.sql`
 4. scp commands for downloading or uploading files/folders to server.
 5. `sql_restore <localdbname> < backup.sql`
 
