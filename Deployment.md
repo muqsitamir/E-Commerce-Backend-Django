@@ -179,7 +179,7 @@ Save and close file.
 1. `uwsgi --reload /tmp/safe-pidfile.pid` after changing code/taking a git pull.
 2. `sudo service nginx restart` after changing nginx settings.
 3. `mysqldump <serverdbname> > backup.sql`
-4. scp commands for downloading or uploading files/folders to server.
+4. scp commands for downloading or uploading files/folders to server or `rsync -avz --partial root@172.105.121.154:/root/wwf_snow_leopard/media/events /path/to/local/directory/`
 5. `sql_restore <localdbname> < backup.sql`
 
 ### Troubleshooting
@@ -189,3 +189,8 @@ Save and close file.
 ### Reference
 
 https://www.digitalocean.com/community/tutorials/how-to-allow-remote-access-to-mysql
+
+
+##### Downloading data and merging database commands
+1. `rsync -av --partial root@172.105.121.154:/root/wwf_snow_leopard/media/events/ .` This continues downloading the content of the events folder from where the download is interrupted
+2. ` mysqldump -u root -p wwf_lums --no-create-db --no-create-info --skip-triggers --insert-ignore > db2_dump.sql` This dumps the database without writing any create statements and skipping errors during inserting such as duplicate entries (insert ignore).
